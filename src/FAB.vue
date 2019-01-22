@@ -11,6 +11,7 @@
                         <transition
                                 enter-active-class="animated quick zoomIn"
                                 leave-active-class="animated quick zoomOut"
+                                v-on:after-enter="afterActionsTransitionEnter"
                         >
                             <template v-if="action.tooltip">
                                 <li v-if="toggle" :style="{ 'background-color': action.color || bgColor }"
@@ -37,16 +38,16 @@
                      v-tooltip="{ content: mainTooltip, placement: tooltipPosition, classes: 'fab-tooltip' }"
                      class="fab-main pointer" :style="{ 'background-color': bgColor, 'padding': paddingAmount }"
                 >
-                    <i :class="[ mainIconSize , { rotate: toggle } ,'material-icons main']">{{mainIcon}}</i>
-                    <i :class="[ mainIconSize , { rotate: toggle } ,'material-icons close']">add</i>
+                    <i :class="[ mainIconSize , { rotate: toggle && allowRotation } ,'material-icons main']">{{mainIcon}}</i>
+                    <i :class="[ mainIconSize , { rotate: toggle && allowRotation } ,'material-icons close']">add</i>
                 </div>
             </template>
             <template v-else>
                 <div v-ripple="rippleColor == 'light' ? 'rgba(255, 255, 255, 0.35)' : ''" @click="toggle = !toggle"
                      class="fab-main pointer" :style="{ 'background-color': bgColor, 'padding': paddingAmount }"
                 >
-                    <i :class="[ mainIconSize , { rotate: toggle }, 'material-icons main']">{{mainIcon}}</i>
-                    <i :class="[ mainIconSize , { rotate: toggle }, 'material-icons close']">add</i>
+                    <i :class="[ mainIconSize , { rotate: toggle && allowRotation }, 'material-icons main']">{{mainIcon}}</i>
+                    <i :class="[ mainIconSize , { rotate: toggle && allowRotation }, 'material-icons close']">add</i>
                 </div>
             </template>
         </template>
@@ -55,15 +56,15 @@
                 <div v-bind:v-tooltip="{ content: mainTooltip, placement: tooltipPosition, classes: 'fab-tooltip'}"
                      class="fab-main pointer" :style="{ 'background-color': bgColor, 'padding': paddingAmount }"
                 >
-                    <i class="material-icons md-36 main" :class="{ rotate: toggle }">{{mainIcon}}</i>
-                    <i class="material-icons md-36 close" :class="{ rotate: toggle }">add</i>
+                    <i class="material-icons md-36 main" :class="{ rotate: toggle && allowRotation }">{{mainIcon}}</i>
+                    <i class="material-icons md-36 close" :class="{ rotate: toggle && allowRotation }">add</i>
                 </div>
             </template>
             <template v-else>
                 <div class="fab-main pointer" :style="{ 'background-color': bgColor, 'padding': paddingAmount }"
                 >
-                    <i class="material-icons md-36 main" :class="{ rotate: toggle }">{{mainIcon}}</i>
-                    <i class="material-icons md-36 close" :class="{ rotate: toggle }">add</i>
+                    <i class="material-icons md-36 main" :class="{ rotate: toggle && allowRotation }">{{mainIcon}}</i>
+                    <i class="material-icons md-36 close" :class="{ rotate: toggle && allowRotation }">add</i>
                 </div>
             </template>
         </template>
@@ -80,7 +81,7 @@
         directives: {Ripple, tooltip: VTooltip},
         data() {
             return {
-                toggle: false,
+                toggle: this.startOpened,
                 pos: {},
                 tooltipPosition: 'left'
             }
@@ -116,9 +117,21 @@
             fixedTooltip: {
                 default: false
             },
+            tooltipTimeOutWhenStartOpened: {
+                default: 200
+            },
+            enableRotation:{
+                default: true
+            },
             actions: {
                 default: () => []
-            }
+            },
+            startOpened: {
+                default: false
+            },
+            toggleWhenAway: {
+                default: true
+            },
         },
         computed: {
             actionIconSize() {
@@ -135,6 +148,9 @@
                     default:
                         return 'md-24';
                 }
+            },
+            allowRotation(){
+                return this.enableRotation &&  this.actions && this.actions.length;
             },
             mainIconSize() {
                 switch (this.iconSize) {
@@ -226,7 +242,9 @@
                 this.toggle = false;
             },
             away() {
-                this.toggle = false;
+                if(this.toggleWhenAway) {
+                    this.toggle = false;
+                }
             },
             setPosition() {
                 this.pos = {};
@@ -262,19 +280,19 @@
                     wrapper.insertBefore(el, wrapper.childNodes[0]);
                 }
             },
-            showTooltip(show) {
-                if (show && this.actions.length && this.fixedTooltip) {
-
-                    //timeout to prevent wrong position for the tooltip
-                    setTimeout(() => {
-                        this.$refs.actions.forEach((item) => {
-                            if(this.toggle) {
-                                item._tooltip.show();
-                            }
-                        });
-                    },700);
-
+            showTooltip(timeOut = 0) {
+                if (this.toggle && this.actions.length && this.fixedTooltip) {
+                  setTimeout(() => {
+                    this.$refs.actions.forEach((item) => {
+                      if(this.toggle) {
+                        item._tooltip.show();
+                      }
+                    });
+                  },timeOut);
                 }
+            },
+            afterActionsTransitionEnter() {
+                this.showTooltip();
             }
         },
         watch: {
@@ -285,9 +303,6 @@
                     this.moveTransition();
                     this.tooltipPos();
                 });
-            },
-            toggle(val) {
-                this.showTooltip(val);
             }
         },
         mounted() {
@@ -295,6 +310,10 @@
         },
         created() {
             this.setPosition();
+
+            if (this.startOpened) {
+                this.showTooltip(this.tooltipTimeOutWhenStartOpened);
+            }
         }
     }
 </script>
