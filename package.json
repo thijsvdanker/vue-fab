@@ -1,11 +1,11 @@
 {
-  "name": "vue-fab",
+  "name": "@thijsvdanker/vue-fab",
   "version": "2.3.2",
   "description": "Vue Floating Action Button",
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/PygmySlowLoris/vue-fab"
+    "url": "https://github.com/thijsvdanker/vue-fab"
   },
   "keywords": [
     "vue",
@@ -15,9 +15,9 @@
     "button"
   ],
   "author": {
-    "name": "PygmySlowLoris Team",
-    "email": "team@pygmyslowloris.org",
-    "url": "https://github.com/PygmySlowLoris"
+    "name": "Thijs van den Anker",
+    "email": "thijs@bitsnbolts.nl",
+    "url": "https://github.com/thijsvdanker"
   },
   "contributors": [
     "Eduardo Marcos <edujugon@gmail.com> (https://github.com/Edujugon)",
@@ -25,9 +25,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/PygmySlowLoris/vue-fab/issues"
+    "url": "https://github.com/thijsvdanker/vue-fab/issues"
   },
-  "homepage": "https://github.com/PygmySlowLoris/vue-fab#readme",
+  "homepage": "https://github.com/thijsvdanker/vue-fab#readme",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
