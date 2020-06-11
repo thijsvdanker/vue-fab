@@ -74,7 +74,7 @@
 <script>
     import {mixin as clickaway} from 'vue-clickaway';
     import Ripple from 'vue-ripple-directive';
-    import VTooltip from 'v-tooltip'
+    import {VTooltip} from 'v-tooltip'
 
     export default {
         mixins: [clickaway],
