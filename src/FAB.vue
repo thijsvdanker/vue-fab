@@ -190,8 +190,7 @@
                     }
                 }
                 return {
-                    bottom: '-20px',
-                    paddingBottom: '20px'
+                    bottom: '-20px'
                 }
             },
             transitionEnter() {
@@ -432,6 +431,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
+        padding-bottom: 20px;
     }
 
     .fab-list li {
